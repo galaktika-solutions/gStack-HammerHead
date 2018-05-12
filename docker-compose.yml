@@ -1,0 +1,32 @@
+version: "3.2"
+
+volumes:
+  data:
+    driver: local
+
+networks:
+  default:
+    ipam:
+      driver: default
+      config:
+        - subnet: ${NETWORK_SUBNET}
+
+services:
+  postgres:
+    image: ${REGISTRY_URL}/${COMPOSE_PROJECT_NAME}:${IMAGE_TAG}
+    volumes:
+      - "data:/data"
+      - "./.env:/.env:ro"
+    command: ["postgres"]
+    ports:
+      - "127.0.0.1:5432:5432"
+
+  django:
+    image: ${REGISTRY_URL}/${COMPOSE_PROJECT_NAME}:${IMAGE_TAG}
+    depends_on: ["postgres"]
+    stop_signal: SIGINT
+    volumes:
+      - "./.env:/.env:ro"
+    command: ["django"]
+    ports:
+      - "80:8000"

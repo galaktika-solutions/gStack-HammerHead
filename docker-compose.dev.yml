@@ -1,0 +1,13 @@
+version: "3.2"
+
+services:
+  postgres:
+    build:
+      context: .
+    volumes:
+      - "./copy:/copy:ro"
+
+  django:
+    volumes:
+      - "./copy:/copy:ro"
+      - "./django_project:/django_project:ro"
