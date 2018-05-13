@@ -28,5 +28,14 @@ services:
     volumes:
       - "./.env:/.env:ro"
     command: ["django"]
+
+  nginx:
+    image: ${REGISTRY_URL}/${COMPOSE_PROJECT_NAME}:${IMAGE_TAG}
+    depends_on: ["django"]
+    volumes:
+      - "./.env:/.env:ro"
+      - "./.env.files:/.env.files:ro"
+    command: ["nginx"]
     ports:
-      - "80:8000"
+      - "80:80"
+      - "443:443"

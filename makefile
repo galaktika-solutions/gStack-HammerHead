@@ -30,7 +30,7 @@ docker-build:
 	docker-compose build
 
 run-as-me:
-	docker-compose run --rm -u "$(usr)" -v "$(CURDIR):/gstack" django bash
+	docker-compose run --rm -u "$(usr)" -v "$(CURDIR):/gstack" -w "/gstack" django bash
 
 ## Build the Docker image, tag it and push it to the registry
 push: img = $(REGISTRY_URL)/$(COMPOSE_PROJECT_NAME)

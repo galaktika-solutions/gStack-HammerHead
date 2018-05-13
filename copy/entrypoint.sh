@@ -4,6 +4,7 @@ set -e
 . /copy/utils.sh
 
 if [ "$1" = 'postgres' ]; then
+  check_file "root:root:600" "/.env"
   mkdir -p "$PGDATA"
   chown -R "postgres:postgres" "$PGDATA"
   chmod 700 "$PGDATA"
@@ -41,31 +42,33 @@ if [ "$1" = 'postgres' ]; then
   exec chroot --userspec=postgres:postgres / postgres
 fi
 
+django_common() {
+  wait_for_db
+  DB_PASSWORD="$(readvar DB_PASSWORD)"; export DB_PASSWORD
+  DJANGO_SECRET_KEY="$(readvar DJANGO_SECRET_KEY)"; export DJANGO_SECRET_KEY
+  HOST_NAME="$(readvar HOST_NAME)"; export HOST_NAME
+}
+
 if [ "$1" = 'django' ]; then
-  DB_PASSWORD="$(readvar DB_PASSWORD)"
-  PGPASSWORD="$DB_PASSWORD" wait_for_db
-  # DJANGO_SECRET_KEY="$(readvar DJANGO_SECRET_KEY)"
-  # export DJANGO_SECRET_KEY
-  #
-  # if [ "$DJANGO_AUTOMIGRATE" = 'true' ]; then
-  #   su-exec django django-admin migrate
-  # fi
-  #
-  # # create django superuser if needed
-  # DJANGO_SUPERUSER_EMAIL="$(read_var DJANGO_SUPERUSER_EMAIL)"
-  # if [ -n "$DJANGO_SUPERUSER_EMAIL" ]; then
-  #   DJANGO_SUPERUSER_PASSWORD="$(read_var DJANGO_SUPERUSER_PASSWORD)"
-  #   su-exec django python3 /docker/create_superuser.py \
-  #     "$DJANGO_SUPERUSER_EMAIL" \
-  #     "$DJANGO_SUPERUSER_PASSWORD"
-  # fi
-  #
-  # if [ "$DEV" = 'true' ]; then
-  #   exec su-exec django django-admin runserver 0.0.0.0:8000
-  # fi
-  # exec su-exec django uwsgi --ini /docker/uwsgi.conf
-  export DB_PASSWORD
-  exec chroot --userspec django:django / django-admin runserver 0.0.0.0:8000
+  django_common
+  if [ "$(readvar DEV_MODE false)" = 'true' ]; then
+    exec chroot --userspec django:django / django-admin runserver 0.0.0.0:8000
+  fi
+  exec chroot --userspec django:django / uwsgi --ini /copy/uwsgi.conf
+fi
+
+if [ "$1" = 'django-admin' ]; then
+  django_common
+  shift;
+  exec chroot --userspec django:django / django-admin "$@"
+fi
+
+if [ "$1" = 'nginx' ]; then
+  check_file "root:root:600" "/.env.files/certificate.key"
+  if [ "$(readvar DEV_MODE false)" = 'true' ]; then
+    exec nginx -c /copy/nginx.dev.conf
+  fi
+  exec nginx -c /copy/nginx.conf
 fi
 
 exec "$@"

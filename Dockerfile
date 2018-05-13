@@ -28,7 +28,17 @@ ENV PYTHONPATH /django_project
 RUN pip install --no-cache-dir django==2.0.5
 RUN pip install --no-cache-dir psycopg2-binary==2.7.4
 
+# nginx
+RUN groupadd -r nginx --gid=4430 && useradd -r -g nginx --uid=4430 nginx
+RUN apt-get install -y nginx
+RUN ln -sf /dev/stdout /var/log/nginx/access.log
+
+# uwsgi
+RUN apt-get install -y build-essential
+RUN apt-get install -y python3.6-dev
+RUN pip install --no-cache-dir uwsgi==2.0.17
+
 COPY copy copy
-COPY django_project django_project
+COPY --chown=django:django django_project django_project
 
 ENTRYPOINT ["/copy/entrypoint.sh"]

@@ -11,3 +11,7 @@ services:
     volumes:
       - "./copy:/copy:ro"
       - "./django_project:/django_project:ro"
+
+  nginx:
+    volumes:
+      - "./copy:/copy:ro"
