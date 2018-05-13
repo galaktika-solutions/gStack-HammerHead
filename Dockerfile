@@ -40,5 +40,6 @@ RUN pip install --no-cache-dir uwsgi==2.0.17
 
 COPY copy copy
 COPY --chown=django:django django_project django_project
+COPY static static
 
 ENTRYPOINT ["/copy/entrypoint.sh"]

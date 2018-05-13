@@ -5,13 +5,15 @@ services:
     build:
       context: .
     volumes:
-      - "./copy:/copy:ro"
+      - "./copy:/copy"
 
   django:
     volumes:
-      - "./copy:/copy:ro"
-      - "./django_project:/django_project:ro"
+      - "./copy:/copy"
+      - "./django_project:/django_project"
+      - "./static:/static"
 
   nginx:
     volumes:
-      - "./copy:/copy:ro"
+      - "./copy:/copy"
+      - "./static:/static"

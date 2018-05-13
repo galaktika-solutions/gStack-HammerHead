@@ -1,2 +1,4 @@
 .git
+static/.gitignore
 .env
+.env.files
