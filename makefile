@@ -24,11 +24,6 @@ help:
 # TARGETS #
 ###########
 
-## Bild the Docker image
-## Use it only on development and build environments
-docker-build:
-	docker-compose build
-
 run-as-me:
 	docker-compose run --rm -u "$(usr)" -v "$(CURDIR):/gstack" -w "/gstack" django bash
 

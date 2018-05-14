@@ -11,9 +11,7 @@ services:
     volumes:
       - "./copy:/copy"
       - "./django_project:/django_project"
-      - "./static:/static"
 
   nginx:
     volumes:
       - "./copy:/copy"
-      - "./static:/static"
