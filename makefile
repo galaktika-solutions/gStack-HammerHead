@@ -24,13 +24,21 @@ help:
 # TARGETS #
 ###########
 
+## Run the Django container with the current user, in the project directory
 run-as-me:
 	docker-compose run --rm -u "$(usr)" -v "$(CURDIR):/gstack" -w "/gstack" django bash
 
+build:
+	mkdir -p static
+	chmod 777 static
+	IMAGE_TAG=latest docker-compose build
+	docker-compose run -v "$(CURDIR)/static:/static" --rm django django-admin collectstatic --no-input -c
+	echo "*" > static/.gitignore && echo "!.gitignore" >> static/.gitignore
+	chmod 775 static
+	IMAGE_TAG=latest docker-compose build
+
 ## Build the Docker image, tag it and push it to the registry
 push: img = $(REGISTRY_URL)/$(COMPOSE_PROJECT_NAME)
-push:
-	IMAGE_TAG=latest docker-compose build
-	docker tag $(img)-postgres:latest $(img):$(timestamp)
-	docker push "$(img):latest"
+push: build
+	docker tag $(img):latest $(img):$(timestamp)
 	docker push "$(img):$(timestamp)"

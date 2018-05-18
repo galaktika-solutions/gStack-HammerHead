@@ -6,7 +6,7 @@
 
 set -e
 
-common_name=$(. ../copy/utils.sh && readvar HOST_NAME "../.env")
+common_name=$(docker-compose config | sed -rn 's/^.*HOST_NAME: (.*$)/\1/p' | head -1)
 
 san="DNS:$common_name, \
      IP:127.0.0.1"

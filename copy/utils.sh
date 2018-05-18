@@ -197,6 +197,11 @@ proc_file() {
   done
 }
 
+read_secret() {
+  dir="/run/secrets"
+  cat "$dir/$1"
+}
+
 # runsql <command> <db=postgres> <host=localhost> <dbuser=postgres>
 runsql() {
   db="$2"; if [ -z "$db" ]; then db=postgres; fi
@@ -206,27 +211,14 @@ runsql() {
 }
 
 wait_for_db() {
-  while ! PGPASSWORD="$(readvar DB_PASSWORD)" runsql 'select 1;' django postgres django &> /dev/null; do
+  while ! PGPASSWORD="$(read_secret DB_PASSWORD)" runsql 'select 1;' django postgres django &> /dev/null; do
     echo "postgres not ready yet..."; sleep 1
   done
   echo "postgres ready"; return 0
 }
 
-readvar() {
-  envfile="$2"; if ! [ -f "$envfile" ]; then envfile='/.env'; fi
-  num="$(sed -nr "/^$1=/ p" "$envfile" | wc -l)"
-  if [ "$num" -eq 0 ]; then
-    if [ "$#" -eq 2 ]; then echo $2; return 0; fi
-    err "variable not defined in $envfile: $1"
-  fi
-  if [ "$num" -gt 1 ]; then
-    err "multiple definition of variable in $envfile: $1"
-  fi
-  sed -nr "s/^$1=(.*)$/\1/ p" "$envfile"; return 0
-}
-
 check_file() {
-  if [ "$(readvar INSECURE_FILES_ALLOWED false)" = 'false' ]; then
+  if ! [ "$INSECURE_FILES_ALLOWED" = 'true' ]; then
     proc_file -r "$1" "$2"
   fi
 }

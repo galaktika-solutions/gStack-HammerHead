@@ -4,7 +4,8 @@ set -e
 . /copy/utils.sh
 
 if [ "$1" = 'postgres' ]; then
-  check_file "root:root:600" "/.env"
+  check_file "postgres:postgres:600" /run/secrets/*
+
   mkdir -p "$PGDATA"
   chown -R "postgres:postgres" "$PGDATA"
   chmod 700 "$PGDATA"
@@ -27,7 +28,7 @@ if [ "$1" = 'postgres' ]; then
     runsql "CREATE USER django"
   fi
 
-  db_password="$(readvar DB_PASSWORD)"
+  db_password="$(read_secret DB_PASSWORD)"
   runsql "ALTER USER django WITH PASSWORD \$pass\$$db_password\$pass\$;"
 
   if ! (runsql '\l' | cut -d \| -f 1 | grep -qw django); then
@@ -42,30 +43,26 @@ if [ "$1" = 'postgres' ]; then
   exec chroot --userspec=postgres:postgres / postgres
 fi
 
-django_common() {
-  wait_for_db
-  DB_PASSWORD="$(readvar DB_PASSWORD)"; export DB_PASSWORD
-  DJANGO_SECRET_KEY="$(readvar DJANGO_SECRET_KEY)"; export DJANGO_SECRET_KEY
-  HOST_NAME="$(readvar HOST_NAME)"; export HOST_NAME
-}
-
 if [ "$1" = 'django' ]; then
-  django_common
-  if [ "$(readvar DEV_MODE false)" = 'true' ]; then
-    exec chroot --userspec django:django / django-admin runserver 0.0.0.0:8000
+  check_file "django:django:600" /run/secrets/*
+
+  wait_for_db
+  if [ "$DEV_MODE" = 'true' ]; then
+    exec dumb-init --rewrite 15:2 chroot --userspec django:django / django-admin runserver 0.0.0.0:8000
   fi
-  exec chroot --userspec django:django / uwsgi --ini /copy/uwsgi.conf
+  exec dumb-init --rewrite 15:2 chroot --userspec django:django / uwsgi --ini /copy/uwsgi.conf
 fi
 
 if [ "$1" = 'django-admin' ]; then
-  django_common
+  wait_for_db
   shift;
   exec chroot --userspec django:django / django-admin "$@"
 fi
 
 if [ "$1" = 'nginx' ]; then
-  check_file "root:root:600" "/.env.files/certificate.key"
-  if [ "$(readvar DEV_MODE false)" = 'true' ]; then
+  check_file "nginx:nginx:600" /run/secrets/*
+
+  if [ "$DEV_MODE" = 'true' ]; then
     exec nginx -c /copy/nginx.dev.conf
   fi
   exec nginx -c /copy/nginx.conf

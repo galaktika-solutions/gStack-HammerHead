@@ -1,3 +1,4 @@
 .git
 .env
-.env.files
+.secrets
+static/.gitignore

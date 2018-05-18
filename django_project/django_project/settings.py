@@ -3,7 +3,9 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DEBUG = True
 
-SECRET_KEY = os.environ['DJANGO_SECRET_KEY']
+with open('/run/secrets/DJANGO_SECRET_KEY') as f:
+    SECRET_KEY = f.read()
+
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
@@ -48,13 +50,16 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'django_project.wsgi.application'
 
+with open('/run/secrets/DB_PASSWORD') as f:
+    db_password = f.read()
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'HOST': 'postgres',
         'NAME': 'django',
         'USER': 'django',
-        'PASSWORD': os.environ['DB_PASSWORD'],
+        'PASSWORD': db_password,
         'ATOMIC_REQUESTS': True,
     }
 }

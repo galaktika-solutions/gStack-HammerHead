@@ -1,8 +1,7 @@
-version: "3.2"
+version: "3.6"
 
 volumes:
   data:
-    driver: local
 
 networks:
   default:
@@ -14,28 +13,30 @@ networks:
 services:
   postgres:
     image: ${REGISTRY_URL}/${COMPOSE_PROJECT_NAME}:${IMAGE_TAG}
+    env_file: .env
     volumes:
       - "data:/data"
-      - "./.env:/.env:ro"
+      - "./.secrets/postgres:/run/secrets:ro"
     command: ["postgres"]
     ports:
       - "127.0.0.1:5432:5432"
 
   django:
     image: ${REGISTRY_URL}/${COMPOSE_PROJECT_NAME}:${IMAGE_TAG}
+    env_file: .env
     depends_on: ["postgres"]
-    stop_signal: SIGINT
-    volumes:
-      - "./.env:/.env:ro"
     command: ["django"]
+    volumes:
+      - "./.secrets/django:/run/secrets:ro"
 
   nginx:
     image: ${REGISTRY_URL}/${COMPOSE_PROJECT_NAME}:${IMAGE_TAG}
+    env_file: .env
     depends_on: ["django"]
-    volumes:
-      - "./.env:/.env:ro"
-      - "./.env.files:/.env.files:ro"
     command: ["nginx"]
+    volumes:
+      - "./.secrets/nginx:/run/secrets:ro"
+
     ports:
       - "80:80"
       - "443:443"

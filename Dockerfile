@@ -38,9 +38,10 @@ RUN apt-get install -y build-essential
 RUN apt-get install -y python3.6-dev
 RUN pip install --no-cache-dir uwsgi==2.0.17
 
+RUN pip install --no-cache-dir dumb-init==1.2.1
+
 COPY copy copy
 COPY --chown=django:django django_project django_project
-RUN mkdir -p /static; chown django:django /static
-RUN DJANGO_SECRET_KEY='x' HOST_NAME='' DB_PASSWORD='' django-admin collectstatic --no-input
+COPY --chown=django:django static static
 
 ENTRYPOINT ["/copy/entrypoint.sh"]
