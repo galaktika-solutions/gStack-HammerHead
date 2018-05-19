@@ -22,7 +22,7 @@ RUN apt-get install -y python3.6 python3-venv
 RUN python3.6 -m venv /python
 ENV PATH /python/bin:$PATH
 ENV PYTHONUNBUFFERED 1
-ENV DJANGO_SETTINGS_MODULE django_project.settings
+ENV DJANGO_SETTINGS_MODULE core.settings
 ENV PYTHONPATH /django_project
 
 RUN pip install --no-cache-dir django==2.0.5
