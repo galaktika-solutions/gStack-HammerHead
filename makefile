@@ -28,14 +28,15 @@ help:
 run-as-me:
 	docker-compose run --rm -u "$(usr)" -v "$(CURDIR):/gstack" -w "/gstack" django bash
 
+## Build production docker images
 build:
 	mkdir -p static
 	chmod 777 static
-	IMAGE_TAG=latest docker-compose build
+	IMAGE_TAG=latest COMPOSE_FILE="docker-compose.yml:docker-compose.dev.yml" docker-compose build
 	docker-compose run -v "$(CURDIR)/static:/static" --rm django django-admin collectstatic --no-input -c
 	echo "*" > static/.gitignore && echo "!.gitignore" >> static/.gitignore
 	chmod 775 static
-	IMAGE_TAG=latest docker-compose build
+	IMAGE_TAG=latest COMPOSE_FILE="docker-compose.yml:docker-compose.dev.yml" docker-compose build
 
 ## Build the Docker image, tag it and push it to the registry
 push: img = $(REGISTRY_URL)/$(COMPOSE_PROJECT_NAME)
