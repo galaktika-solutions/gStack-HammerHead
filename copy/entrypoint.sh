@@ -3,6 +3,48 @@ set -e
 
 . /copy/utils.sh
 
+if [ "$1" = 'backup' ]; then
+  wait_for_db
+
+  timestamp=$(date -u +"%Y-%m-%d-%H-%M-%Z")
+  format=$(ask_user "Which dump method would you like to use?" l custom plain)
+  if [ "$format" = "custom" ]; then
+    filename="$HOST_NAME-db-$timestamp.backup"
+  else
+    filename="$HOST_NAME-db-$timestamp.backup.sql"
+  fi
+  PGPASSWORD="$(read_secret DB_PASSWORD)" pg_dump -h postgres -U django -d django -F "$format" -f "/backup/$filename"
+  chmod 600 "/backup/$filename"
+  exit 0
+fi
+
+if [ "$1" = 'restore' ]; then
+  reply=$(ask_user "This operation will drop the existing database!
+Type the hostname to continue: ")
+  if ! [ "$reply" = "$HOST_NAME" ]; then exit 0; fi
+  format=$(\
+    ask_user "Which restore method would you like to use?" l custom plain \
+  )
+  if [ "$format" = "custom" ]; then
+    array=()
+    while IFS=  read -r -d $'\0'; do
+      array+=("$REPLY")
+    done < <(cd backup && find . -name "*.backup" -print0)
+    reply="$(ask_user "Choose a backup file: " l "${array[@]}")"
+    PGPASSWORD="$(read_secret DB_PASSWORD)" pg_restore -e -v -h postgres -U postgres -d postgres -Cc "/backup/$reply"
+  else
+    array=()
+    while IFS=  read -r -d $'\0'; do
+      array+=("$REPLY")
+    done < <(cd backup && find . -name "*.backup.sql" -print0)
+    reply="$(ask_user "Choose a backup file: " l "${array[@]}")"
+    PGPASSWORD="$(read_secret DB_PASSWORD)" runsql "DROP DATABASE django" postgres postgres
+    PGPASSWORD="$(read_secret DB_PASSWORD)" runsql "CREATE DATABASE django OWNER django" postgres postgres
+    PGPASSWORD="$(read_secret DB_PASSWORD)" psql -v ON_ERROR_STOP=1 -h postgres -d django -U postgres -f "/backup/$reply"
+  fi
+  exit 0
+fi
+
 if [ "$1" = 'postgres' ]; then
   check_file "postgres:postgres:600" /run/secrets/*
 
@@ -30,6 +72,7 @@ if [ "$1" = 'postgres' ]; then
 
   db_password="$(read_secret DB_PASSWORD)"
   runsql "ALTER USER django WITH PASSWORD \$pass\$$db_password\$pass\$;"
+  runsql "ALTER USER postgres WITH PASSWORD \$pass\$$db_password\$pass\$;"
 
   if ! (runsql '\l' | cut -d \| -f 1 | grep -qw django); then
     runsql "CREATE DATABASE django OWNER django"
