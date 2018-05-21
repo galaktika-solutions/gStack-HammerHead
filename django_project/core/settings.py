@@ -51,7 +51,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'core.wsgi.application'
 
 with open('/run/secrets/DB_PASSWORD') as f:
-    db_password = f.read()
+    db_password = f.readline().strip()
 
 DATABASES = {
     'default': {
