@@ -13,8 +13,7 @@ if [ "$1" = 'backup' ]; then
   else
     filename="$HOST_NAME-db-$timestamp.backup.sql"
   fi
-  PASS=$(read_secret DB_PASSWORD)
-  PGPASSWORD="${PASS%.}" pg_dump -h postgres -U django -d django -F "$format" -f "/backup/$filename"
+  PGPASSWORD=$(read_secret DB_PASSWORD) pg_dump -h postgres -U django -d django -F "$format" -f "/backup/$filename"
   chmod 600 "/backup/$filename"
   exit 0
 fi
@@ -32,7 +31,7 @@ if [ "$1" = 'restore' ]; then
   done < <(cd backup && find . -name "$findname" -print0)
   reply="$(ask_user "Choose a backup file: " l "${array[@]}")"
 
-  PASS=$(read_secret DB_PASSWORD); PGPASSWORD="${PASS%.}"; export PGPASSWORD
+  PGPASSWORD=$(read_secret DB_PASSWORD); export PGPASSWORD
   if [ "$format" = "custom" ]; then
     pg_restore -e -v -h postgres -U postgres -d postgres -Cc "/backup/$reply"
   else
@@ -69,9 +68,9 @@ if [ "$1" = 'postgres' ]; then
   fi
 
   PASS=$(read_secret DB_PASSWORD)
-  MD5=$(echo -n "${PASS%.}django" | md5sum | cut -d ' ' -f 1)
+  MD5=$(echo -n "${PASS}django" | md5sum | cut -d ' ' -f 1)
   runsql "ALTER USER django WITH PASSWORD 'md5$MD5';"
-  MD5=$(echo -n "${PASS%.}postgres" | md5sum | cut -d ' ' -f 1)
+  MD5=$(echo -n "${PASS}postgres" | md5sum | cut -d ' ' -f 1)
   runsql "ALTER USER postgres WITH PASSWORD'md5$MD5';"
 
   if ! (runsql '\l' | cut -d \| -f 1 | grep -qw django); then

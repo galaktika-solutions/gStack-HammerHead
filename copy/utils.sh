@@ -199,7 +199,7 @@ proc_file() {
 
 read_secret() {
   dir="/run/secrets"
-  cat "$dir/$1"; echo '.'
+  cat "$dir/$1"
 }
 
 # runsql <command> <db=postgres> <host=localhost> <dbuser=postgres>
@@ -211,8 +211,7 @@ runsql() {
 }
 
 wait_for_db() {
-  PASS="$(read_secret DB_PASSWORD)"
-  while ! PGPASSWORD="${PASS%.}" runsql 'select 1;' django postgres django &> /dev/null; do
+  while ! PGPASSWORD="$(read_secret DB_PASSWORD)" runsql 'select 1;' django postgres django &> /dev/null; do
     echo "postgres not ready yet..."; sleep 1
   done
   echo "postgres ready"; return 0
