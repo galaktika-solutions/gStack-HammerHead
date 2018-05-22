@@ -13,34 +13,32 @@ if [ "$1" = 'backup' ]; then
   else
     filename="$HOST_NAME-db-$timestamp.backup.sql"
   fi
-  PGPASSWORD="$(read_secret DB_PASSWORD)" pg_dump -h postgres -U django -d django -F "$format" -f "/backup/$filename"
+  PASS=$(read_secret DB_PASSWORD)
+  PGPASSWORD="${PASS%.}" pg_dump -h postgres -U django -d django -F "$format" -f "/backup/$filename"
   chmod 600 "/backup/$filename"
   exit 0
 fi
 
 if [ "$1" = 'restore' ]; then
-  reply=$(ask_user "This operation will drop the existing database!
-Type the hostname to continue: ")
+  echo "This operation will drop the existing database!"
+  reply=$(ask_user "Type the hostname to continue: ")
   if ! [ "$reply" = "$HOST_NAME" ]; then exit 0; fi
-  format=$(\
-    ask_user "Which restore method would you like to use?" l custom plain \
-  )
+  format=$(ask_user "Which restore method would you like to use?" l custom plain)
+
+  if [ "$format" = "custom" ]; then findname="*.backup"; else findname="*.backup.sql"; fi
+  array=()
+  while IFS=  read -r -d $'\0'; do
+    array+=("$REPLY")
+  done < <(cd backup && find . -name "$findname" -print0)
+  reply="$(ask_user "Choose a backup file: " l "${array[@]}")"
+
+  PASS=$(read_secret DB_PASSWORD); PGPASSWORD="${PASS%.}"; export PGPASSWORD
   if [ "$format" = "custom" ]; then
-    array=()
-    while IFS=  read -r -d $'\0'; do
-      array+=("$REPLY")
-    done < <(cd backup && find . -name "*.backup" -print0)
-    reply="$(ask_user "Choose a backup file: " l "${array[@]}")"
-    PGPASSWORD="$(read_secret DB_PASSWORD)" pg_restore -e -v -h postgres -U postgres -d postgres -Cc "/backup/$reply"
+    pg_restore -e -v -h postgres -U postgres -d postgres -Cc "/backup/$reply"
   else
-    array=()
-    while IFS=  read -r -d $'\0'; do
-      array+=("$REPLY")
-    done < <(cd backup && find . -name "*.backup.sql" -print0)
-    reply="$(ask_user "Choose a backup file: " l "${array[@]}")"
-    PGPASSWORD="$(read_secret DB_PASSWORD)" runsql "DROP DATABASE django" postgres postgres
-    PGPASSWORD="$(read_secret DB_PASSWORD)" runsql "CREATE DATABASE django OWNER django" postgres postgres
-    PGPASSWORD="$(read_secret DB_PASSWORD)" psql -v ON_ERROR_STOP=1 -h postgres -d django -U postgres -f "/backup/$reply"
+    runsql "DROP DATABASE django" postgres postgres
+    runsql "CREATE DATABASE django OWNER django" postgres postgres
+    psql -v ON_ERROR_STOP=1 -h postgres -d django -U postgres -f "/backup/$reply"
   fi
   exit 0
 fi
@@ -70,9 +68,11 @@ if [ "$1" = 'postgres' ]; then
     runsql "CREATE USER django"
   fi
 
-  db_password="$(read_secret DB_PASSWORD)"
-  runsql "ALTER USER django WITH PASSWORD \$pass\$$db_password\$pass\$;"
-  runsql "ALTER USER postgres WITH PASSWORD \$pass\$$db_password\$pass\$;"
+  PASS=$(read_secret DB_PASSWORD)
+  MD5=$(echo -n "${PASS%.}django" | md5sum | cut -d ' ' -f 1)
+  runsql "ALTER USER django WITH PASSWORD 'md5$MD5';"
+  MD5=$(echo -n "${PASS%.}postgres" | md5sum | cut -d ' ' -f 1)
+  runsql "ALTER USER postgres WITH PASSWORD'md5$MD5';"
 
   if ! (runsql '\l' | cut -d \| -f 1 | grep -qw django); then
     runsql "CREATE DATABASE django OWNER django"
