@@ -43,3 +43,10 @@ push: img = $(REGISTRY_URL)/$(COMPOSE_PROJECT_NAME)
 push: build
 	docker tag $(img):latest $(img):$(timestamp)
 	docker push "$(img):$(timestamp)"
+
+.PHONY: backup
+backup:
+	docker-compose run --rm -v "$(CURDIR)/backup:/backup" django backup
+
+restore:
+	docker-compose run --rm -v "$(CURDIR)/backup:/backup" django restore
