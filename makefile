@@ -2,7 +2,7 @@ SHELL=/bin/bash
 
 readvar = $(shell cat .env | sed -nr 's/^$(1)=(.*)$$/\1/ p')
 
-timestamp := $(shell -u date +"%Y-%m-%d-%H-%M")
+timestamp := $(shell date -u +"%Y-%m-%d-%H-%M")
 usr := $(shell id -u):$(shell id -g)
 REGISTRY_URL := $(call readvar,REGISTRY_URL)
 COMPOSE_PROJECT_NAME := $(call readvar,COMPOSE_PROJECT_NAME)
