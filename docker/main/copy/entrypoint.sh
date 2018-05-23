@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-. /copy/utils.sh
+. /utils.sh
 
 if [ "$1" = 'backup' ]; then
   wait_for_db

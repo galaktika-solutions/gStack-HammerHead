@@ -40,7 +40,8 @@ RUN pip install --no-cache-dir uwsgi==2.0.17
 
 RUN pip install --no-cache-dir dumb-init==1.2.1
 
-COPY copy copy
+COPY docker/main/copy copy
+COPY docker/utils.sh utils.sh
 COPY --chown=django:django django_project django_project
 COPY --chown=django:django static static
 
