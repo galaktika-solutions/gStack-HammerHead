@@ -1,10 +1,11 @@
 import os
 
+from .utils import read_secret
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DEBUG = True
 
-with open('/run/secrets/DJANGO_SECRET_KEY') as f:
-    SECRET_KEY = f.read()
+SECRET_KEY = read_secret('DJANGO_SECRET_KEY')
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 SESSION_COOKIE_SECURE = True
@@ -50,16 +51,13 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'core.wsgi.application'
 
-with open('/run/secrets/DB_PASSWORD') as f:
-    db_password = f.read()
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'HOST': 'postgres',
         'NAME': 'django',
         'USER': 'django',
-        'PASSWORD': db_password,
+        'PASSWORD': read_secret('DB_PASSWORD'),
         'ATOMIC_REQUESTS': True,
     }
 }
