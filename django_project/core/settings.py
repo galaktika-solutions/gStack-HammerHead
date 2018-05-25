@@ -3,7 +3,7 @@ import os
 from .utils import read_secret
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-DEBUG = True
+DEBUG = os.environ.get('DEV_MODE', 'false') == 'true'
 
 SECRET_KEY = read_secret('DJANGO_SECRET_KEY')
 
