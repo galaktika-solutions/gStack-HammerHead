@@ -4,8 +4,7 @@ readvar = $(shell cat .env | sed -nr 's/^$(1)=(.*)$$/\1/ p')
 
 timestamp := $(shell date -u +"%Y-%m-%d-%H-%M")
 usr := $(shell id -u):$(shell id -g)
-REGISTRY_URL := $(call readvar,REGISTRY_URL)
-COMPOSE_PROJECT_NAME := $(call readvar,COMPOSE_PROJECT_NAME)
+IMAGE_NAME_PREFIX := $(call readvar,IMAGE_NAME_PREFIX)
 
 # self documenting makefile
 .DEFAULT_GOAL := help
@@ -30,6 +29,7 @@ run-as-me:
 
 ## Build production docker images
 build:
+	docker-compose down
 	mkdir -p static
 	chmod 777 static
 	IMAGE_TAG=latest COMPOSE_FILE="docker-compose.yml:docker-compose.dev.yml" docker-compose build
@@ -37,12 +37,14 @@ build:
 	echo "*" > static/.gitignore && echo "!.gitignore" >> static/.gitignore
 	chmod 775 static
 	IMAGE_TAG=latest COMPOSE_FILE="docker-compose.yml:docker-compose.dev.yml" docker-compose build
+	docker-compose down
 
 ## Build the Docker image, tag it and push it to the registry
-push: img = $(REGISTRY_URL)/$(COMPOSE_PROJECT_NAME)
+push: img = $(IMAGE_NAME_PREFIX)-main
 push: build
 	docker tag $(img):latest $(img):$(timestamp)
 	docker push "$(img):$(timestamp)"
+	docker push "$(img):latest"
 
 .PHONY: backup
 backup:

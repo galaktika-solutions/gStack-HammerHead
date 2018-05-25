@@ -4,14 +4,18 @@ services:
   postgres:
     build:
       context: .
+      dockerfile: docker/main/Dockerfile
     volumes:
-      - "./copy:/copy"
+      - "./docker/main/copy:/copy"
+      - "./docker/utils.sh:/utils.sh"
 
   django:
     volumes:
-      - "./copy:/copy"
+      - "./docker/main/copy:/copy"
+      - "./docker/utils.sh:/utils.sh"
       - "./django_project:/django_project"
 
   nginx:
     volumes:
-      - "./copy:/copy"
+      - "./docker/main/copy:/copy"
+      - "./docker/utils.sh:/utils.sh"

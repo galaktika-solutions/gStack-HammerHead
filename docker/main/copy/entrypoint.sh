@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-. /copy/utils.sh
+. /utils.sh
 
 if [ "$1" = 'backup' ]; then
   wait_for_db
@@ -89,6 +89,11 @@ if [ "$1" = 'django' ]; then
   check_file "django:django:600" /run/secrets/*
 
   wait_for_db
+
+  if [ "$DEMO" = 'true' ]; then
+    chroot --userspec django:django / django-admin migrate
+  fi
+
   if [ "$DEV_MODE" = 'true' ]; then
     exec dumb-init --rewrite 15:2 chroot --userspec django:django / django-admin runserver 0.0.0.0:8000
   fi
@@ -102,12 +107,16 @@ if [ "$1" = 'django-admin' ]; then
 fi
 
 if [ "$1" = 'nginx' ]; then
-  check_file "nginx:nginx:600" /run/secrets/*
+  check_file "0:0:600" /run/secrets/*
 
   if [ "$DEV_MODE" = 'true' ]; then
     exec nginx -c /copy/nginx.dev.conf
   fi
   exec nginx -c /copy/nginx.conf
+fi
+
+if [ "$1" = 'demo_setup' ]; then
+  exec /demo/demo_setup.sh
 fi
 
 exec "$@"
