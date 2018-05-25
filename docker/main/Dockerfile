@@ -45,4 +45,8 @@ COPY docker/utils.sh utils.sh
 COPY --chown=django:django django_project django_project
 COPY --chown=django:django static static
 
+# Demo setup
+COPY demo demo
+COPY docker-compose.yml demo/docker-compose.yml
+
 ENTRYPOINT ["/copy/entrypoint.sh"]
