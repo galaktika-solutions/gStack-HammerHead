@@ -102,7 +102,7 @@ if [ "$1" = 'django-admin' ]; then
 fi
 
 if [ "$1" = 'nginx' ]; then
-  check_file "nginx:nginx:600" /run/secrets/*
+  check_file "0:0:600" /run/secrets/*
 
   if [ "$DEV_MODE" = 'true' ]; then
     exec nginx -c /copy/nginx.dev.conf
