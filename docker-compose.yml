@@ -1,42 +1,69 @@
-version: "3.6"
+version: "3.7"
 
 volumes:
   data:
 
 networks:
   default:
-    ipam:
-      driver: default
-      config:
-        - subnet: ${NETWORK_SUBNET}
 
 services:
   postgres:
-    image: ${IMAGE_NAME_PREFIX}-main:${IMAGE_TAG}
-    env_file: .env
+    image: ${REGISTRY_URL}/${COMPOSE_PROJECT_NAME}-main:${VERSION}
+    container_name: ${COMPOSE_PROJECT_NAME}-postgres
+    command: ["postgres"]
     volumes:
       - "data:/data"
-      - "./.secrets/postgres:/run/secrets:ro"
-    command: ["postgres"]
+      - "./.secret.env:/.secret.env"
+    env_file: .env
     ports:
       - "127.0.0.1:5432:5432"
+    logging:
+      driver: syslog
+      options:
+        tag: "docker/${COMPOSE_PROJECT_NAME}-postgres"
 
   django:
-    image: ${IMAGE_NAME_PREFIX}-main:${IMAGE_TAG}
-    env_file: .env
-    depends_on: ["postgres"]
+    image: ${REGISTRY_URL}/${COMPOSE_PROJECT_NAME}-main:${VERSION}
+    container_name: ${COMPOSE_PROJECT_NAME}-django
     command: ["django"]
+    depends_on: ["postgres"]
     volumes:
-      - "./.secrets/django:/run/secrets:ro"
+      - "data:/data"
+      - "./.secret.env:/.secret.env"
+    env_file: .env
+    logging:
+      driver: syslog
+      options:
+        tag: "docker/${COMPOSE_PROJECT_NAME}-django"
 
   nginx:
-    image: ${IMAGE_NAME_PREFIX}-main:${IMAGE_TAG}
-    env_file: .env
+    image: ${REGISTRY_URL}/${COMPOSE_PROJECT_NAME}-main:${VERSION}
+    container_name: ${COMPOSE_PROJECT_NAME}-nginx
     depends_on: ["django"]
     command: ["nginx"]
     volumes:
-      - "./.secrets/nginx:/run/secrets:ro"
-
+      - "./.secret.env:/.secret.env"
+      - "data:/data"
+    env_file: .env
     ports:
-      - "80:80"
-      - "443:443"
+      - "${SERVER_IP}:80:80"
+      - "${SERVER_IP}:443:443"
+    logging:
+      driver: syslog
+      options:
+        tag: "docker/${COMPOSE_PROJECT_NAME}-nginx"
+
+  backup:
+    image: ${REGISTRY_URL}/${COMPOSE_PROJECT_NAME}-main:${VERSION}
+    container_name: ${COMPOSE_PROJECT_NAME}-backup
+    command: ["backup_daemon"]
+    depends_on: ["postgres"]
+    volumes:
+      - "data:/data"
+      - "./.secret.env:/.secret.env"
+      - "./backup:/backup"
+    env_file: .env
+    logging:
+      driver: syslog
+      options:
+        tag: "docker/${COMPOSE_PROJECT_NAME}-backup"

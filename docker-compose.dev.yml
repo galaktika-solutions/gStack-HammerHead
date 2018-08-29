@@ -1,21 +1,41 @@
-version: "3.6"
+version: "3.7"
 
 services:
   postgres:
     build:
-      context: .
-      dockerfile: docker/main/Dockerfile
+        context: .
+        dockerfile: docker/main/Dockerfile
     volumes:
-      - "./docker/main/copy:/copy"
-      - "./docker/utils.sh:/utils.sh"
+      - ".:/src"
+    logging:
+      driver: json-file
 
   django:
     volumes:
-      - "./docker/main/copy:/copy"
-      - "./docker/utils.sh:/utils.sh"
-      - "./django_project:/django_project"
+      - ".:/src"
+    logging:
+      driver: json-file
+    ports:
+      - "127.0.0.1:8000:8000"
 
   nginx:
     volumes:
-      - "./docker/main/copy:/copy"
-      - "./docker/utils.sh:/utils.sh"
+      - ".:/src"
+    logging:
+      driver: json-file
+
+  build_js:
+    build:
+        context: .
+        dockerfile: docker/node/Dockerfile
+    image: ${COMPOSE_PROJECT_NAME}-node
+    volumes:
+      - ".:/src"
+    env_file: .env
+    command: ["npm", "start"]
+
+  backup:
+    volumes:
+      - ".:/src"
+    logging:
+      driver: json-file

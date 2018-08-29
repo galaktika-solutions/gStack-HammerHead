@@ -1,2 +1,9 @@
-/.env
+.env
+.secret.env
+
+*.pyc
 __pycache__
+
+.coverage
+/backup
+/static

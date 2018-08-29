@@ -1,17 +1,10 @@
 #!/bin/bash
-
-###########################################
-# Run this from the .env.files directory! #
-#################################3#########
-
 set -e
 
-common_name=$(docker-compose config | sed -rn 's/^.*HOST_NAME: (.*$)/\1/p' | head -1)
+common_name="$COMPOSE_PROJECT_NAME"
+san="DNS:$HOST_NAME,IP:$SERVER_IP"
 
-san="DNS:$common_name, \
-     IP:127.0.0.1"
-
-rm -rf ./*.{crt,key,csr}
+rm -rf *.{crt,key,csr}
 
 # generate CA private key
 openssl genrsa -out ca.key 2048
@@ -35,3 +28,9 @@ openssl x509 -req -in certificate.csr -CA ca.crt -CAkey ca.key \
         -CAcreateserial -CAserial ca.srl \
         -extfile <(cat /etc/ssl/openssl.cnf \
                    <(printf "[SAN]\nsubjectAltName=%s" "$san"))
+
+rm certificate.csr
+
+# # client cert for the browser
+# openssl pkcs12 -export -clcerts -in certificate.crt -inkey certificate.key \
+#         -passout pass:admin -out certificate.pfx
