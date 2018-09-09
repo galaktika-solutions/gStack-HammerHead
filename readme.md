@@ -1,6 +1,9 @@
 #  Galaktika Solutions - Software Stack
-PIP: [![Requirements Status](https://requires.io/github/galaktika-solutions/gStack/requirements.svg?branch=readme)](https://requires.io/galaktika-solutions/gStack/requirements/?branch=readme)
-NodeJS: [![dependencies Status](https://david-dm.org/galaktika-solutions/gStack/status.svg?path=js_client)](https://david-dm.org/galaktika-solutions/gStack?path=js_client)
+- PIP [![Requirements Status](https://requires.io/github/galaktika-solutions/gStack/requirements.svg?branch=readme)](https://requires.io/galaktika-solutions/gStack/requirements/?branch=readme)
+- NodeJS [![dependencies Status](https://david-dm.org/galaktika-solutions/gStack/status.svg?path=js_client)](https://david-dm.org/galaktika-solutions/gStack?path=js_client)
+- Python 3.6
+- Postgres 10 [latest]
+- Nginx [latest]
 
 # `.env`
 ```env
