@@ -1,4 +1,5 @@
 #  Galaktika Solutions - Software Stack
+[![Requirements Status](https://requires.io/github/galaktika-solutions/gStack/requirements.svg?branch=readme)](https://requires.io/galaktika-solutions/gStack/requirements/?branch=readme)
 
 # `.env`
 ```env
