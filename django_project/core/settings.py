@@ -30,7 +30,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # gStack packages
     'core',
+
+    # 3rd party packages -> Load them last so we can override them
+    'explorer',
 ]
 
 MIDDLEWARE = [
@@ -100,7 +105,29 @@ DATABASES = {
             'sslmode': 'verify-ca',
         },
     },
+    'explorer': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'HOST': 'postgres',
+        'PORT': '5432',
+        'NAME': 'django',
+        'USER': 'explorer',
+        'PASSWORD': db_password,
+        'TEST': {
+            'MIRROR': 'default',
+        },
+        'OPTIONS': {
+            'sslmode': 'verify-ca',
+        },
+    },
 }
+
+EXPLORER_DEFAULT_CONNECTION = 'explorer'
+EXPLORER_CONNECTIONS = {'Default': 'explorer'}
+EXPLORER_DATA_EXPORTERS = [
+    ('csv', 'core.exporters.CSVExporterBOM'),
+    ('excel', 'explorer.exporters.ExcelExporter'),
+    ('json', 'explorer.exporters.JSONExporter')
+]
 
 # Internationalization
 LANGUAGE_CODE = 'en-us'
