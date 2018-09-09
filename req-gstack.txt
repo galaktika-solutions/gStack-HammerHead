@@ -5,3 +5,4 @@ django-debug-toolbar==1.10
 django-sql-explorer==1.1.2
 XlsxWriter==1.1.0
 django-extensions==2.1.2
+coverage==4.5.1

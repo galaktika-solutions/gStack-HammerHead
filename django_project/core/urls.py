@@ -1,3 +1,5 @@
+# coding: utf-8
+# Django core and 3rd party imports
 from django.urls import path, include
 from django.contrib import admin
 from django.conf import settings

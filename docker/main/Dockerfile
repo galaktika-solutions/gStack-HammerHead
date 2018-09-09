@@ -31,6 +31,7 @@ ENV DJANGO_SETTINGS_MODULE core.settings
 # uwsgi
 RUN apt-get install -y build-essential
 RUN apt-get install -y python3.6-dev
+RUN apt-get install -y gcc
 
 # pip packages
 RUN pip install --no-cache-dir \
@@ -40,7 +41,8 @@ RUN pip install --no-cache-dir \
   django-debug-toolbar==1.10 \
   django-sql-explorer==1.1.2 \
   XlsxWriter==1.1.0 \
-  django-extensions==2.1.2
+  django-extensions==2.1.2 \
+  coverage==4.5.1
 
 # nginx
 RUN groupadd -r nginx --gid=4430 && useradd -r -g nginx --uid=4430 nginx

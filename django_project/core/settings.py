@@ -1,5 +1,8 @@
+# coding: utf-8
+# Django core and 3rd party imports
 import os
 
+# Project imports
 from .utils import read_secret
 
 
