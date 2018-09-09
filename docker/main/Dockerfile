@@ -39,7 +39,8 @@ RUN pip install --no-cache-dir \
   uwsgi==2.0.17.1 \
   django-debug-toolbar==1.10 \
   django-sql-explorer==1.1.2 \
-  XlsxWriter==1.1.0
+  XlsxWriter==1.1.0 \
+  django-extensions==2.1.2
 
 # nginx
 RUN groupadd -r nginx --gid=4430 && useradd -r -g nginx --uid=4430 nginx

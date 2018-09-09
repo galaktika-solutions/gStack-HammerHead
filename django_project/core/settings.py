@@ -31,6 +31,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    # 3rd party packages -> Load them before the our packages are loaded
+    'django_extensions',
+
     # gStack packages
     'core',
 

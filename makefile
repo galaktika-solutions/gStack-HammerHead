@@ -25,6 +25,9 @@ build:
 create_dev_certificates:
 	docker-compose run --rm -u $(usr) -w /src/.files postgres ./create_dev_certificates.sh
 
+shell_plus:
+	docker-compose run --rm django with_django django-admin shell_plus
+
 migrate:
 	docker-compose run --rm django with_django django-admin migrate
 

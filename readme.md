@@ -28,6 +28,5 @@ CERTIFICATE_KEY=
 
 TODO
 - Coverage + test running
-- SQL explorer
 - Email settings
 - Documentation generations
