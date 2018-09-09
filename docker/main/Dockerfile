@@ -32,6 +32,7 @@ ENV DJANGO_SETTINGS_MODULE core.settings
 RUN apt-get install -y build-essential
 RUN apt-get install -y python3.6-dev
 RUN apt-get install -y gcc
+RUN apt-get install -y git
 
 # pip packages
 RUN pip install --no-cache-dir \
@@ -39,7 +40,7 @@ RUN pip install --no-cache-dir \
   psycopg2-binary==2.7.5 \
   uwsgi==2.0.17.1 \
   django-debug-toolbar==1.10 \
-  django-sql-explorer==1.1.2 \
+  git+https://github.com/galaktika-solutions/django-sql-explorer.git \
   XlsxWriter==1.1.0 \
   django-extensions==2.1.2 \
   coverage==4.5.1
