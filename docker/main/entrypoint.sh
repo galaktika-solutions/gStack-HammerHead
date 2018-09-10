@@ -87,6 +87,23 @@ if [ "$1" = 'nginx' ]; then
 fi
 
 ################################################################################
+if [ "$1" = 'test' ]; then
+  prepare_django
+
+  keepdb=''
+  if [ "$2" = 'keepdb' ]; then
+    keepdb='--keepdb'
+  fi
+  docker/gprun.py -u django -s SIGINT coverage run --source=/src/ /src/django_project/manage.py test $keepdb -v 2 --noinput
+  coverage report
+
+  chown -R django:django /src/static
+  coverage html
+  chown -R "$(stat -c %u:%g .git)" /src/static
+  exit 0
+fi
+
+################################################################################
 if [ "$1" = 'collectstatic' ]; then
   prepare_django
 

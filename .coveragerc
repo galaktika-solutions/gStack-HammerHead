@@ -1,0 +1,14 @@
+[run]
+branch = True
+data_file = /tmp/.coverage
+omit = *migrations*
+       */test*
+       */wsgi.py
+
+[report]
+exclude_lines =
+    pragma: no cover
+    if __name__ ==
+
+[html]
+directory = /src/static/coverage_report/

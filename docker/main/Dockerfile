@@ -31,12 +31,19 @@ ENV DJANGO_SETTINGS_MODULE core.settings
 # uwsgi
 RUN apt-get install -y build-essential
 RUN apt-get install -y python3.6-dev
+RUN apt-get install -y gcc
+RUN apt-get install -y git
 
 # pip packages
 RUN pip install --no-cache-dir \
-  django==2.1 \
+  django==2.1.1 \
   psycopg2-binary==2.7.5 \
-  uwsgi==2.0.17
+  uwsgi==2.0.17.1 \
+  django-debug-toolbar==1.10 \
+  git+https://github.com/galaktika-solutions/django-sql-explorer.git \
+  XlsxWriter==1.1.0 \
+  django-extensions==2.1.2 \
+  coverage==4.5.1
 
 # nginx
 RUN groupadd -r nginx --gid=4430 && useradd -r -g nginx --uid=4430 nginx

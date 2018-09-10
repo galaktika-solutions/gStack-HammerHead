@@ -1,5 +1,8 @@
+# coding: utf-8
+# Django core and 3rd party imports
 import os
 
+# Project imports
 from .utils import read_secret
 
 
@@ -31,7 +34,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    # 3rd party packages -> Load them before the our packages are loaded
+    'django_extensions',
+
+    # gStack packages
     'core',
+
+    # 3rd party packages -> Load them last so we can override them
+    'explorer',
 ]
 
 MIDDLEWARE = [
@@ -44,11 +54,14 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-# if DEBUG:
-#     INSTALLED_APPS.append('debug_toolbar')
-#     MIDDLEWARE_CLASSES.append(
-#         'debug_toolbar.middleware.DebugToolbarMiddleware'
-#     )
+if DEBUG:
+    INSTALLED_APPS.append('debug_toolbar')
+    MIDDLEWARE.append(
+        'debug_toolbar.middleware.DebugToolbarMiddleware'
+    )
+    DEBUG_TOOLBAR_CONFIG = {
+        'SHOW_TOOLBAR_CALLBACK': lambda x: DEBUG
+    }
 
 pwd_path = 'django.contrib.auth.password_validation.'
 AUTH_PASSWORD_VALIDATORS = [
@@ -98,7 +111,29 @@ DATABASES = {
             'sslmode': 'verify-ca',
         },
     },
+    'explorer': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'HOST': 'postgres',
+        'PORT': '5432',
+        'NAME': 'django',
+        'USER': 'explorer',
+        'PASSWORD': db_password,
+        'TEST': {
+            'MIRROR': 'default',
+        },
+        'OPTIONS': {
+            'sslmode': 'verify-ca',
+        },
+    },
 }
+
+EXPLORER_DEFAULT_CONNECTION = 'explorer'
+EXPLORER_CONNECTIONS = {'Default': 'explorer'}
+EXPLORER_DATA_EXPORTERS = [
+    ('csv', 'core.exporters.CSVExporterBOM'),
+    ('excel', 'explorer.exporters.ExcelExporter'),
+    ('json', 'explorer.exporters.JSONExporter')
+]
 
 # Internationalization
 LANGUAGE_CODE = 'en-us'
@@ -137,31 +172,6 @@ FILE_UPLOAD_PERMISSIONS = 0o640
 
 # List of the admins
 # ADMINS = (('IS', 'is@vertis.com'),)
-
-# DEBUG_TOOLBAR_CONFIG = {
-#     'JQUERY_URL': ,
-#     'SHOW_TOOLBAR_CALLBACK': lambda x: DEBUG,
-#     'DISABLE_PANELS': (
-#         'debug_toolbar.panels.redirects.RedirectsPanel',
-#         'ddt_request_history.panels.request_history.RequestHistoryPanel'
-#     )
-# }
-#
-# DEBUG_TOOLBAR_PANELS = [
-#     'ddt_request_history.panels.request_history.RequestHistoryPanel',
-#     'debug_toolbar.panels.versions.VersionsPanel',
-#     'debug_toolbar.panels.timer.TimerPanel',
-#     'debug_toolbar.panels.settings.SettingsPanel',
-#     'debug_toolbar.panels.headers.HeadersPanel',
-#     'debug_toolbar.panels.request.RequestPanel',
-#     'debug_toolbar.panels.sql.SQLPanel',
-#     'debug_toolbar.panels.staticfiles.StaticFilesPanel',
-#     'debug_toolbar.panels.templates.TemplatesPanel',
-#     'debug_toolbar.panels.cache.CachePanel',
-#     'debug_toolbar.panels.signals.SignalsPanel',
-#     'debug_toolbar.panels.logging.LoggingPanel',
-#     'debug_toolbar.panels.redirects.RedirectsPanel',
-# ]
 
 # DEFAULT_FROM_EMAIL =
 # EMAIL_HOST =

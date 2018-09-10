@@ -27,8 +27,6 @@ CERTIFICATE_KEY=
 ```
 
 TODO
-- Debug toolbar
 - Coverage + test running
-- SQL explorer
 - Email settings
 - Documentation generations
