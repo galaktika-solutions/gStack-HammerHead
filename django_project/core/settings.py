@@ -26,6 +26,21 @@ SECRET_KEY = read_secret('DJANGO_SECRET_KEY')
 ALLOWED_HOSTS = [os.environ.get('HOST_NAME'), os.environ.get('SERVER_IP')]
 BASE_URL = os.environ.get('HOST_NAME')
 
+# Email related settings
+ADMINS = [('IT Team', os.environ['ADMIN_EMAIL'])]
+EMAIL_BACKEND = 'mailer.backend.DbBackend'
+MAILER_EMAIL_BACKEND = 'core.rewrite_email_backend.EmailBackend'
+SERVER_EMAIL = os.environ['SERVER_EMAIL']
+EMAIL_SUBJECT_PREFIX = '[%s] ' % os.environ.get('HOST_NAME')
+EMAIL_HOST = os.environ['EMAIL_HOST']
+EMAIL_PORT = int(os.environ['EMAIL_PORT'])
+EMAIL_HOST_USER = read_secret('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = read_secret('EMAIL_HOST_PASSWORD')
+DEFAULT_FROM_EMAIL = os.environ['DEFAULT_FROM_EMAIL']
+EMAIL_USE_TLS = os.environ['EMAIL_USE_TLS']
+# EMAIL_TIMEOUT = 5
+MAILER_LOCK_PATH = '/tmp/mailer_lock'
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -36,6 +51,7 @@ INSTALLED_APPS = [
 
     # 3rd party packages -> Load them before the our packages are loaded
     'django_extensions',
+    'mailer',
 
     # gStack packages
     'core',
@@ -178,7 +194,7 @@ FILE_UPLOAD_PERMISSIONS = 0o640
 # EMAIL_PORT =
 # SERVER_EMAIL =
 # EMAIL_BACKEND =
-EMAIL_SUBJECT_PREFIX = '[%s] ' % os.environ.get('HOST_NAME')
+
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 SESSION_COOKIE_SECURE = True

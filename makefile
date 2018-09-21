@@ -28,11 +28,17 @@ create_dev_certificates:
 shell_plus:
 	docker-compose run --rm django with_django django-admin shell_plus
 
+bash:
+	docker-compose run --rm django with_django bash
+
 test:
 	docker-compose run --rm django test
 
 test_keepdb:
 	docker-compose run --rm django test keepdb
+
+coverage:
+	docker-compose run --rm django coverage
 
 migrate:
 	docker-compose run --rm django with_django django-admin migrate

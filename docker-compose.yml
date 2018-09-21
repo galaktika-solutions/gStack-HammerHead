@@ -67,3 +67,16 @@ services:
       driver: syslog
       options:
         tag: "docker/${COMPOSE_PROJECT_NAME}-backup"
+
+  tasks:
+    image: ${REGISTRY_URL}/${COMPOSE_PROJECT_NAME}-main:${VERSION}
+    container_name: ${COMPOSE_PROJECT_NAME}-tasks
+    command: ["with_django", "/src/tasks/tasks.py"]
+    depends_on: ["postgres"]
+    volumes:
+      - "./.secret.env:/.secret.env"
+    env_file: .env
+    logging:
+      driver: syslog
+      options:
+        tag: "docker/${COMPOSE_PROJECT_NAME}-tasks"

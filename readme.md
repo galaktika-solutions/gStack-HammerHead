@@ -15,6 +15,18 @@ VERSION=latest
 HOST_NAME=dev.gstacktest.net
 SERVER_IP=127.0.0.1
 BACKUP_UID=1000
+
+EMAIL_PORT=587
+EMAIL_HOST=smtp.gmail.com
+EMAIL_USE_TLS=True
+
+ADMIN_EMAIL=galaktika.admins@gmail.com
+DEFAULT_FROM_EMAIL=galaktika.bot@gmail.com
+SERVER_EMAIL=galaktika.bot@gmail.com
+REWRITE_RECIPIENTS=your_email@gmail.com
+
+SEND_MAIL_TASK=True
+RETRY_DEFERRED_TASK=True
 ```
 
 # `.secret.env`
@@ -24,9 +36,9 @@ DB_PASSWORD=
 CERTIFICATE_CACERT=
 CERTIFICATE_CRT=
 CERTIFICATE_KEY=
+EMAIL_HOST_USER=
+EMAIL_HOST_PASSWORD=
 ```
 
 TODO
-- Coverage + test running
-- Email settings
 - Documentation generations

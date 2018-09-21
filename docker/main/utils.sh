@@ -99,6 +99,8 @@ prepare_django() {
   mkdir -p /run/secrets
   readsecret DB_PASSWORD /run/secrets/DB_PASSWORD django:django 400
   readsecret DJANGO_SECRET_KEY /run/secrets/DJANGO_SECRET_KEY django:django 400
+  readsecret EMAIL_HOST_USER /run/secrets/EMAIL_HOST_USER django:django 400
+  readsecret EMAIL_HOST_PASSWORD /run/secrets/EMAIL_HOST_PASSWORD django:django 400
 
   # the django postgres client looks for these certs in ~/.postgresql
   mkdir -p /home/django/.postgresql

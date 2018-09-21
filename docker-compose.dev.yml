@@ -39,3 +39,9 @@ services:
       - ".:/src"
     logging:
       driver: json-file
+
+  tasks:
+    volumes:
+      - ".:/src"
+    logging:
+      driver: json-file

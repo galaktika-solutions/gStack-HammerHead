@@ -43,6 +43,9 @@ RUN pip install --no-cache-dir \
   git+https://github.com/galaktika-solutions/django-sql-explorer.git \
   XlsxWriter==1.1.0 \
   django-extensions==2.1.2 \
+  coverage==4.5.1 \
+  periodtask==0.5.5 \
+  django-mailer==1.2.5 \
   coverage==4.5.1
 
 # nginx
