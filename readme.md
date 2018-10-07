@@ -39,6 +39,3 @@ CERTIFICATE_KEY=
 EMAIL_HOST_USER=
 EMAIL_HOST_PASSWORD=
 ```
-
-TODO
-- Documentation generations

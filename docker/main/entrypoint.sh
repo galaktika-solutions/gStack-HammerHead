@@ -94,7 +94,7 @@ if [ "$1" = 'test' ]; then
   if [ "$2" = 'keepdb' ]; then
     keepdb='--keepdb'
   fi
-  docker/gprun.py -u django -s SIGINT coverage run --source=/src/ /src/django_project/manage.py test $keepdb -v 2 --noinput
+  docker/gprun.py -u django -s SIGINT coverage run --rcfile /src/.coveragerc /src/django_project/manage.py test $keepdb -v 2 --noinput
   coverage report
 
   chown -R django:django /src/static
@@ -123,12 +123,27 @@ if [ "$1" = 'coverage' ]; then
   prepare_django
   mkdir -p /src/static
   chown -R django:django /src/static
-  docker/gprun.py -u django coverage run --source='.' django_project/manage.py test
-  docker/gprun.py -u django coverage html -d '/src/static/html_cov/'
+  docker/gprun.py -u django coverage run --rcfile /src/.coveragerc django_project/manage.py test
+  docker/gprun.py -u django coverage html --rcfile /src/.coveragerc
   docker/gprun.py -u django coverage report
   chown -R "$(stat -c %u:%g .git)" /src/static
   find /src/static -type d -exec chmod 755 {} +
   find /src/static -type f -exec chmod 644 {} +
+  exit 0
+fi
+
+################################################################################
+if [ "$1" = 'docs' ]; then
+  prepare_django
+
+  usr="$(stat -c %u:%g .git)"
+  mkdir -p /src/docs/build && chown -R django:django /src/docs/build
+  cd /src/docs
+  /src/docker/gprun.py -u django make html
+  /src/docker/gprun.py -u django make latexpdf
+  chown -R "$usr" /src/docs/build
+  cd /src/docs/build/latex
+  /src/docker/gprun.py -u django make all
   exit 0
 fi
 

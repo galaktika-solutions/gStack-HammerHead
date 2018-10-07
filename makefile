@@ -40,6 +40,10 @@ test_keepdb:
 coverage:
 	docker-compose run --rm django coverage
 
+.PHONY: docs
+docs:
+	docker-compose run --rm django docs
+
 migrate:
 	docker-compose run --rm django with_django django-admin migrate
 

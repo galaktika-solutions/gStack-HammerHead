@@ -11,3 +11,7 @@
 /.coverage
 /django_project/*/static
 /js_client
+/.coverage
+/docs/source
+/docs/Makefile
+/docs/build/doctrees
