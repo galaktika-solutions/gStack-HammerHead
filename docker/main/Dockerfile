@@ -61,7 +61,9 @@ RUN pip install --no-cache-dir \
   coverage==4.5.1 \
   Sphinx==1.8.1 \
   sphinx_rtd_theme==0.4.2 \
-  djangorestframework==3.8.2
+  djangorestframework==3.8.2 \
+  django-filter==2.0.0 \
+  django-rest-auth==0.9.3
 
 # nginx
 RUN groupadd -r nginx --gid=4430 && useradd -r -g nginx --uid=4430 nginx

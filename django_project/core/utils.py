@@ -1,8 +1,6 @@
 # coding: utf-8
 # Django core and 3rd party imports
 import os.path
-
-
 SECRET_MOUNT = '/run/secrets/'
 
 

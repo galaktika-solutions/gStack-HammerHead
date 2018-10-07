@@ -1,3 +1,5 @@
+# coding: utf-8
+# Django core and 3rd party imports
 import os
 from django.core.mail.backends.smtp import EmailBackend as Backend
 

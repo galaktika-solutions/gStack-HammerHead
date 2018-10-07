@@ -12,14 +12,12 @@ PROD = os.environ.get('ENV') == 'PROD'
 
 STATIC_URL = '/assets/'
 STATIC_ROOT = '/src/static/'
-
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 )
 
 MEDIA_ROOT = '/data/files/media/'
 MEDIA_URL = '/media/'
-
 ROOT_URLCONF = 'core.urls'
 
 SECRET_KEY = read_secret('DJANGO_SECRET_KEY')
@@ -38,7 +36,6 @@ EMAIL_HOST_USER = read_secret('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = read_secret('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = os.environ['DEFAULT_FROM_EMAIL']
 EMAIL_USE_TLS = os.environ['EMAIL_USE_TLS']
-# EMAIL_TIMEOUT = 5
 MAILER_LOCK_PATH = '/tmp/mailer_lock'
 
 INSTALLED_APPS = [
@@ -52,6 +49,10 @@ INSTALLED_APPS = [
     # 3rd party packages -> Load them before the our packages are loaded
     'django_extensions',
     'mailer',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'rest_auth',
+    'django_filters',
 
     # gStack packages
     'core',
@@ -143,6 +144,22 @@ DATABASES = {
     },
 }
 
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_FILTER_BACKENDS': (
+        'django_filters.rest_framework.DjangoFilterBackend',
+    ),
+    'DEFAULT_PAGINATION_CLASS': (
+        'rest_framework.pagination.PageNumberPagination'
+    ),
+    'PAGE_SIZE': 10,
+    'MAX_PAGE_SIZE': 1000,
+    'PAGINATE_BY_PARAM': 'page_size'
+}
+
+
 EXPLORER_DEFAULT_CONNECTION = 'explorer'
 EXPLORER_CONNECTIONS = {'Default': 'explorer'}
 EXPLORER_DATA_EXPORTERS = [
@@ -173,7 +190,6 @@ TIME_FORMAT = ('H:i:s')
 # File Upload max 50MB
 DATA_UPLOAD_MAX_MEMORY_SIZE = 52428800
 FILE_UPLOAD_MAX_MEMORY_SIZE = 52428800
-
 FILE_UPLOAD_DIRECTORY_PERMISSIONS = 0o750
 FILE_UPLOAD_PERMISSIONS = 0o640
 
