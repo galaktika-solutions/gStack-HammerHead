@@ -3,13 +3,30 @@
 from django.urls import path, include
 from django.contrib import admin
 from django.conf import settings
+from rest_framework.routers import SimpleRouter
 
 # Project imports
-from .views import KeyValueStoreApiView
+from .views import KeyValueStoreViewset
+from .routers import ContainerRouter
+
+# core viewsets
+SharedRouter = SimpleRouter()
+SharedRouter.register(
+    r'key_value_store',
+    KeyValueStoreViewset,
+    base_name='key_value_store'
+)
+
+# Register every other application SharedRouter in here
+# Example:
+# from pydoc import locate
+# router.register_router(locate('other.urls.SharedRouter'))
+router = ContainerRouter()
+router.register_router(SharedRouter)
+
 
 api_patterns = [
-    # path('^', include(router.urls)),
-    path('key_value_store/', KeyValueStoreApiView.as_view()),
+    path('', include(router.urls)),
 ]
 
 urlpatterns = [
