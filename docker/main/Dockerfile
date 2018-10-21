@@ -48,12 +48,13 @@ RUN apt-get update && apt-get install -y \
 
 # pip packages
 RUN pip install --no-cache-dir \
-  django==2.1.1 \
+  django==2.1.2 \
   psycopg2-binary==2.7.5 \
   uwsgi==2.0.17.1 \
   django-debug-toolbar==1.10.1 \
+  # django-sql-explorer==1.1.2
   git+https://github.com/galaktika-solutions/django-sql-explorer.git \
-  XlsxWriter==1.1.1 \
+  XlsxWriter==1.1.2 \
   django-extensions==2.1.2 \
   coverage==4.5.1 \
   periodtask==0.5.5 \
@@ -61,7 +62,7 @@ RUN pip install --no-cache-dir \
   coverage==4.5.1 \
   Sphinx==1.8.1 \
   sphinx_rtd_theme==0.4.2 \
-  djangorestframework==3.8.2 \
+  djangorestframework==3.9.0 \
   django-filter==2.0.0 \
   django-rest-auth==0.9.3
 

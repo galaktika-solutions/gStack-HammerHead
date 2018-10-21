@@ -2,7 +2,7 @@
 # Django core and 3rd party imports
 from rest_framework.serializers import ModelSerializer
 
-# MV2 imports
+# Project imports
 from .models import KeyValueStore
 
 
