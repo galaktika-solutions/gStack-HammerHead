@@ -24,7 +24,6 @@ SharedRouter.register(
 router = ContainerRouter()
 router.register_router(SharedRouter)
 
-
 api_patterns = [
     path('', include(router.urls)),
 ]

@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     # 3rd party packages -> Load them before the our packages are loaded
     'django_extensions',
     'mailer',
+    'channels',
     'rest_framework',
     'rest_framework.authtoken',
     'rest_auth',
@@ -113,6 +114,17 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'core.wsgi.application'
+ASGI_APPLICATION = "core.routing.application"
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('redis', 6379)],
+        },
+    },
+}
+
 
 # Database
 db_password = read_secret('DB_PASSWORD')

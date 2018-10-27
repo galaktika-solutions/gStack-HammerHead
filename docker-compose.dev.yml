@@ -24,6 +24,18 @@ services:
     logging:
       driver: json-file
 
+  redis:
+    volumes:
+      - ".:/src"
+    logging:
+      driver: json-file
+
+  daphne:
+    volumes:
+      - ".:/src"
+    logging:
+      driver: json-file
+
   build_js:
     build:
         context: .
