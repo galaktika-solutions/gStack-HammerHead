@@ -6,7 +6,6 @@ import { WebSocketBridge } from 'django-channels'
 const webSocketBridge = new WebSocketBridge();
 webSocketBridge.connect('wss://' + window.location.host +'/ws');
 webSocketBridge.listen(function(action, stream) {
-  console.log('kacsa')
   console.log(action, stream);
 });
 

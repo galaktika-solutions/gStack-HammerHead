@@ -6,7 +6,7 @@ from django.conf import settings
 from rest_framework.routers import SimpleRouter
 
 # Project imports
-from .views import KeyValueStoreViewset
+from .views import KeyValueStoreViewset, DjangoChannelsTestView
 from .routers import ContainerRouter
 
 # core viewsets
@@ -33,6 +33,7 @@ urlpatterns = [
     path('explorer/', include('explorer.urls')),
     path('api/', include((api_patterns, 'api'), namespace='api')),
     path('rest-auth/', include('rest_auth.urls')),
+    path('django-channels/test/', DjangoChannelsTestView.as_view())
 ]
 
 if settings.DEBUG:

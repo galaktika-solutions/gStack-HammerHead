@@ -76,7 +76,7 @@ RUN ln -sf /dev/stdout /var/log/nginx/access.log
 
 # redis
 RUN groupadd -r redis --gid=6379 && useradd -r -g redis --uid=6379 redis
-RUN apt-get install -y redis4
+RUN apt-get install -y redis
 
 # copy
 COPY / /src
