@@ -1,6 +1,13 @@
 import React, {Component} from "react";
 import logo from "./logo.svg";
 import "./App.css";
+import { WebSocketBridge } from 'django-channels'
+
+const webSocketBridge = new WebSocketBridge();
+webSocketBridge.connect('wss://' + window.location.host +'/ws');
+webSocketBridge.listen(function(action, stream) {
+  console.log(action, stream);
+});
 
 class App extends Component {
   render() {

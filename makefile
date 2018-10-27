@@ -10,6 +10,9 @@ createsecret:
 readsecret:
 	@docker-compose run --rm -u $(usr) postgres readsecret
 
+collectstatic:
+	$(devcompose) docker-compose run --rm django collectstatic
+
 build:
 	$(devcompose) docker-compose down
 	$(devcompose) docker-compose build
@@ -17,7 +20,7 @@ build:
 	$(devcompose) docker-compose run --rm build_js npm run build
 	# $(devcompose) docker-compose run --rm django django-admin createcachetable
 	$(devcompose) docker-compose run --rm django collectstatic
-	# $(devcompose) docker-compose run --rm -e 'VERSION=$(timestamp)' django docs
+	$(devcompose) docker-compose run --rm -e 'VERSION=$(timestamp)' django docs
 	cp -R js_client/build/ static
 	$(devcompose) docker-compose build
 	$(devcompose) docker-compose down

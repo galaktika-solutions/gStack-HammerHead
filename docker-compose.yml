@@ -53,6 +53,27 @@ services:
       options:
         tag: "docker/${COMPOSE_PROJECT_NAME}-nginx"
 
+  redis:
+    image: ${REGISTRY_URL}/${COMPOSE_PROJECT_NAME}-main:${VERSION}
+    container_name: ${COMPOSE_PROJECT_NAME}-redis
+    command: ["redis"]
+    logging:
+      driver: syslog
+      options:
+        tag: "docker/${COMPOSE_PROJECT_NAME}-redis"
+
+  daphne:
+    image: ${REGISTRY_URL}/${COMPOSE_PROJECT_NAME}-main:${VERSION}
+    container_name: ${COMPOSE_PROJECT_NAME}-daphne
+    command: ["daphne"]
+    env_file: .env
+    volumes:
+      - "./.secret.env:/.secret.env"
+    logging:
+      driver: syslog
+      options:
+        tag: "docker/${COMPOSE_PROJECT_NAME}-daphne"
+
   backup:
     image: ${REGISTRY_URL}/${COMPOSE_PROJECT_NAME}-main:${VERSION}
     container_name: ${COMPOSE_PROJECT_NAME}-backup

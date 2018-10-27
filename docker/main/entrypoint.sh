@@ -64,15 +64,30 @@ if [ "$1" = 'postgres' ]; then
 
   exec docker/gprun.py -u postgres postgres
 fi
+
+################################################################################
+if [ "$1" = 'redis' ]; then
+  exec docker/gprun.py -u redis redis-server --bind 0.0.0.0
+fi
+
+################################################################################
+if [ "$1" = 'daphne' ]; then
+  if [ "$ENV" = 'DEV' ]; then
+    exit 0
+  fi
+  prepare_django
+  exec docker/gprun.py -u django -s SIGINT daphne -b 0.0.0.0 -p 8001 core.asgi:application
+fi
+
 ################################################################################
 if [ "$1" = 'django' ]; then
   prepare_django
-
   if [ "$ENV" = 'DEV' ]; then
     exec docker/gprun.py -u django -s SIGINT django-admin runserver 0.0.0.0:8000
   fi
   exec docker/gprun.py -u django -s SIGINT uwsgi --ini conf/uwsgi.conf
 fi
+
 ################################################################################
 if [ "$1" = 'nginx' ]; then
   readsecret CERTIFICATE_KEY /certificate.key 0:0 400
