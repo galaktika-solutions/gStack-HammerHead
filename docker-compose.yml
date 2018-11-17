@@ -13,7 +13,7 @@ services:
     command: ["postgres"]
     volumes:
       - "data:/data"
-      - "./.secret.env:/.secret.env"
+      - "./.secret.env:/src/.secret.env"
     env_file: .env
     ports:
       - "127.0.0.1:5432:5432"
@@ -29,7 +29,7 @@ services:
     depends_on: ["postgres"]
     volumes:
       - "data:/data"
-      - "./.secret.env:/.secret.env"
+      - "./.secret.env:/src/.secret.env"
     env_file: .env
     logging:
       driver: syslog
@@ -42,8 +42,8 @@ services:
     depends_on: ["django"]
     command: ["nginx"]
     volumes:
-      - "./.secret.env:/.secret.env"
       - "data:/data"
+      - "./.secret.env:/src/.secret.env"
     env_file: .env
     ports:
       - "${SERVER_IP}:80:80"
@@ -68,36 +68,36 @@ services:
     command: ["daphne"]
     env_file: .env
     volumes:
-      - "./.secret.env:/.secret.env"
+      - "./.secret.env:/src/.secret.env"
     logging:
       driver: syslog
       options:
         tag: "docker/${COMPOSE_PROJECT_NAME}-daphne"
 
-  backup:
-    image: ${REGISTRY_URL}/${COMPOSE_PROJECT_NAME}-main:${VERSION}
-    container_name: ${COMPOSE_PROJECT_NAME}-backup
-    command: ["backup_daemon"]
-    depends_on: ["postgres"]
-    volumes:
-      - "data:/data"
-      - "./.secret.env:/.secret.env"
-      - "./backup:/backup"
-    env_file: .env
-    logging:
-      driver: syslog
-      options:
-        tag: "docker/${COMPOSE_PROJECT_NAME}-backup"
-
-  tasks:
-    image: ${REGISTRY_URL}/${COMPOSE_PROJECT_NAME}-main:${VERSION}
-    container_name: ${COMPOSE_PROJECT_NAME}-tasks
-    command: ["with_django", "/src/tasks/tasks.py"]
-    depends_on: ["postgres"]
-    volumes:
-      - "./.secret.env:/.secret.env"
-    env_file: .env
-    logging:
-      driver: syslog
-      options:
-        tag: "docker/${COMPOSE_PROJECT_NAME}-tasks"
+  # backup:
+  #   image: ${REGISTRY_URL}/${COMPOSE_PROJECT_NAME}-main:${VERSION}
+  #   container_name: ${COMPOSE_PROJECT_NAME}-backup
+  #   command: ["backup_daemon"]
+  #   depends_on: ["postgres"]
+  #   volumes:
+  #     - "data:/data"
+  #     - "./.secret.env:/src/.secret.env"
+  #     - "./backup:/src/backup"
+  #   env_file: .env
+  #   logging:
+  #     driver: syslog
+  #     options:
+  #       tag: "docker/${COMPOSE_PROJECT_NAME}-backup"
+  #
+  # tasks:
+  #   image: ${REGISTRY_URL}/${COMPOSE_PROJECT_NAME}-main:${VERSION}
+  #   container_name: ${COMPOSE_PROJECT_NAME}-tasks
+  #   command: ["with_django", "/src/tasks/tasks.py"]
+  #   depends_on: ["postgres"]
+  #   volumes:
+  #     - "./.secret.env:/src/.secret.env"
+  #   env_file: .env
+  #   logging:
+  #     driver: syslog
+  #     options:
+  #       tag: "docker/${COMPOSE_PROJECT_NAME}-tasks"

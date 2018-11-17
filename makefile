@@ -4,11 +4,14 @@ timestamp := $(shell date +"%Y-%m-%d-%H-%M")
 usr := $(shell id -u):$(shell id -g)
 devcompose := COMPOSE_FILE=docker-compose.yml:docker-compose.dev.yml
 
+clean:
+	docker-compose run --rm postgres find . -type d -name __pycache__ -exec rm -rf {} +
+
 createsecret:
-	@docker-compose run --rm -u $(usr) postgres createsecret
+	docker-compose run --rm postgres createsecret_ui
 
 readsecret:
-	@docker-compose run --rm -u $(usr) postgres readsecret
+	docker-compose run --rm postgres readsecret_ui
 
 collectstatic:
 	$(devcompose) docker-compose run --rm django collectstatic

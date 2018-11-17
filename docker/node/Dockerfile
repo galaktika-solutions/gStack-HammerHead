@@ -10,12 +10,16 @@ ENV LANG en_US.utf8
 RUN apt-get update && apt-get install -y curl gnupg
 RUN curl -sL https://deb.nodesource.com/setup_8.x | bash -
 RUN apt-get update && apt-get install -y nodejs
+RUN npm install -g npm@6.4.1
 
 # python
 RUN apt-get update && apt-get install -y python3.6 python3-venv
 RUN python3.6 -m venv /python
 ENV PATH /python/bin:$PATH
 ENV PYTHONUNBUFFERED 1
+
+RUN pip install --no-cache-dir \
+  gdockutils==0.5.7
 
 ENV HOME /tmp
 WORKDIR /src/js_client

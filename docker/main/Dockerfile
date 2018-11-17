@@ -67,7 +67,8 @@ RUN pip install --no-cache-dir \
   djangorestframework==3.9.0 \
   django-filter==2.0.0 \
   django-rest-auth==0.9.3 \
-  Twisted[tls,http2]==18.7.0
+  Twisted[tls,http2]==18.7.0 \
+  gdockutils==0.5.7
 
 # nginx
 RUN groupadd -r nginx --gid=4430 && useradd -r -g nginx --uid=4430 nginx

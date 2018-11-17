@@ -2,6 +2,7 @@
 /.secret.env
 /.files
 /backup
+/.files
 /static
 /docs/build
 /.coverage

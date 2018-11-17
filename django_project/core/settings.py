@@ -1,9 +1,6 @@
-# coding: utf-8
-# Django core and 3rd party imports
 import os
 
-# Project imports
-from .utils import read_secret
+from gdockutils import read_secret_from_file
 
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -20,7 +17,7 @@ MEDIA_ROOT = '/data/files/media/'
 MEDIA_URL = '/media/'
 ROOT_URLCONF = 'core.urls'
 
-SECRET_KEY = read_secret('DJANGO_SECRET_KEY')
+SECRET_KEY = read_secret_from_file('DJANGO_SECRET_KEY')
 ALLOWED_HOSTS = [os.environ.get('HOST_NAME'), os.environ.get('SERVER_IP')]
 BASE_URL = os.environ.get('HOST_NAME')
 
@@ -32,8 +29,8 @@ SERVER_EMAIL = os.environ['SERVER_EMAIL']
 EMAIL_SUBJECT_PREFIX = '[%s] ' % os.environ.get('HOST_NAME')
 EMAIL_HOST = os.environ['EMAIL_HOST']
 EMAIL_PORT = int(os.environ['EMAIL_PORT'])
-EMAIL_HOST_USER = read_secret('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = read_secret('EMAIL_HOST_PASSWORD')
+EMAIL_HOST_USER = read_secret_from_file('EMAIL_USER')
+EMAIL_HOST_PASSWORD = read_secret_from_file('EMAIL_PASSWORD')
 DEFAULT_FROM_EMAIL = os.environ['DEFAULT_FROM_EMAIL']
 EMAIL_USE_TLS = os.environ['EMAIL_USE_TLS']
 MAILER_LOCK_PATH = '/tmp/mailer_lock'
@@ -135,7 +132,6 @@ CHANNEL_LAYERS = {
 AUTH_USER_MODEL = 'myuser.User'
 
 # Database
-db_password = read_secret('DB_PASSWORD')
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -143,9 +139,13 @@ DATABASES = {
         'PORT': '5432',
         'NAME': 'django',
         'USER': 'django',
-        'PASSWORD': db_password,
+        'PASSWORD': read_secret_from_file('DB_PASSWORD_DJANGO'),
         'OPTIONS': {
             'sslmode': 'verify-ca',
+            'sslrootcert': '/run/secrets/PG_SERVER_SSL_CACERT',
+            'sslcert': '/run/secrets/PG_CLIENT_SSL_CERT',
+            'sslkey': '/run/secrets/PG_CLIENT_SSL_KEY',
+
         },
     },
     'explorer': {
@@ -154,12 +154,15 @@ DATABASES = {
         'PORT': '5432',
         'NAME': 'django',
         'USER': 'explorer',
-        'PASSWORD': db_password,
+        'PASSWORD': read_secret_from_file('DB_PASSWORD_EXPLORER'),
         'TEST': {
             'MIRROR': 'default',
         },
         'OPTIONS': {
             'sslmode': 'verify-ca',
+            'sslrootcert': '/run/secrets/PG_SERVER_SSL_CACERT',
+            'sslcert': '/run/secrets/PG_CLIENT_SSL_CERT',
+            'sslkey': '/run/secrets/PG_CLIENT_SSL_KEY',
         },
     },
 }
