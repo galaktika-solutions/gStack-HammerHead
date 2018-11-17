@@ -31,6 +31,9 @@ create_dev_certificates:
 shell_plus:
 	docker-compose run --rm django with_django django-admin shell_plus
 
+create_superuser:
+	docker-compose run --rm django with_django django-admin createsuperuser
+
 bash:
 	docker-compose run --rm django with_django bash
 

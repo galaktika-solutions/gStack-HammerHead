@@ -78,6 +78,8 @@ RUN ln -sf /dev/stdout /var/log/nginx/access.log
 RUN groupadd -r redis --gid=6379 && useradd -r -g redis --uid=6379 redis
 RUN apt-get install -y redis
 
+run pip install --no-cache-dir premailer==3.2.0
+
 # copy
 COPY / /src
 WORKDIR /src

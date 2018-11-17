@@ -37,6 +37,7 @@ EMAIL_HOST_PASSWORD = read_secret('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = os.environ['DEFAULT_FROM_EMAIL']
 EMAIL_USE_TLS = os.environ['EMAIL_USE_TLS']
 MAILER_LOCK_PATH = '/tmp/mailer_lock'
+ADMIN_EMAIL = os.environ['ADMIN_EMAIL']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -57,6 +58,7 @@ INSTALLED_APPS = [
 
     # gStack packages
     'core',
+    'myuser',
 
     # 3rd party packages -> Load them last so we can override them
     'explorer',
@@ -105,6 +107,10 @@ TEMPLATES = [
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
+                'django.template.context_processors.i18n',
+                'django.template.context_processors.media',
+                'django.template.context_processors.static',
+                'django.template.context_processors.tz',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
@@ -125,6 +131,8 @@ CHANNEL_LAYERS = {
     },
 }
 
+# Set up custom user model
+AUTH_USER_MODEL = 'myuser.User'
 
 # Database
 db_password = read_secret('DB_PASSWORD')
