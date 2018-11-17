@@ -1,15 +1,11 @@
 [run]
 branch = True
 data_file = /tmp/.coverage
-omit = *migrations*
-       */test*
-       */wsgi.py
 source = /src/
-
-[report]
-exclude_lines =
-    pragma: no cover
-    if __name__ ==
+omit = */migrations/*
+       */tests/*
+       */wsgi.py
+       */manage.py
 
 [html]
 directory = /src/static/coverage_report/

@@ -46,14 +46,14 @@ services:
     env_file: .env
     command: ["npm", "start"]
 
-  backup:
-    volumes:
-      - ".:/src"
-    logging:
-      driver: json-file
-
-  tasks:
-    volumes:
-      - ".:/src"
-    logging:
-      driver: json-file
+  # backup:
+  #   volumes:
+  #     - ".:/src"
+  #   logging:
+  #     driver: json-file
+  #
+  # tasks:
+  #   volumes:
+  #     - ".:/src"
+  #   logging:
+  #     driver: json-file

@@ -3,7 +3,6 @@
 /.env
 /.secret.env
 
-**/*.pyc
 **/__pycache__
 
 /backup
