@@ -47,6 +47,7 @@ RUN apt-get update && apt-get install -y \
   git
 
 # pip packages
+# django-sql-explorer==1.1.2
 RUN pip install --no-cache-dir \
   django==2.1.2 \
   channels==2.1.3 \
@@ -54,7 +55,6 @@ RUN pip install --no-cache-dir \
   psycopg2-binary==2.7.5 \
   uwsgi==2.0.17.1 \
   django-debug-toolbar==1.10.1 \
-  # django-sql-explorer==1.1.2
   git+https://github.com/galaktika-solutions/django-sql-explorer.git \
   XlsxWriter==1.1.2 \
   django-extensions==2.1.3 \
@@ -78,11 +78,10 @@ RUN ln -sf /dev/stdout /var/log/nginx/access.log
 RUN groupadd -r redis --gid=6379 && useradd -r -g redis --uid=6379 redis
 RUN apt-get install -y redis
 
-run pip install --no-cache-dir premailer==3.2.0
+RUN pip install --no-cache-dir premailer==3.2.0
 
 # copy
 COPY / /src
 WORKDIR /src
-RUN find /src -type d -exec chmod 777 {} +
 
 ENTRYPOINT ["/src/docker/main/entrypoint.sh"]

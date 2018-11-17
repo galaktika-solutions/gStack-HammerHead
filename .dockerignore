@@ -3,15 +3,13 @@
 /.env
 /.secret.env
 
-**/*.pyc
-**/__pycache__
-
 /backup
 /.files
 /.coverage
 /django_project/*/static
 /js_client
-/.coverage
 /docs/source
 /docs/Makefile
 /docs/build/doctrees
+
+**/__pycache__
