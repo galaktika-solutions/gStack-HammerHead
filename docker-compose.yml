@@ -74,21 +74,21 @@ services:
       options:
         tag: "docker/${COMPOSE_PROJECT_NAME}-daphne"
 
-  # backup:
-  #   image: ${REGISTRY_URL}/${COMPOSE_PROJECT_NAME}-main:${VERSION}
-  #   container_name: ${COMPOSE_PROJECT_NAME}-backup
-  #   command: ["backup_daemon"]
-  #   depends_on: ["postgres"]
-  #   volumes:
-  #     - "data:/data"
-  #     - "./.secret.env:/src/.secret.env"
-  #     - "./backup:/src/backup"
-  #   env_file: .env
-  #   logging:
-  #     driver: syslog
-  #     options:
-  #       tag: "docker/${COMPOSE_PROJECT_NAME}-backup"
-  #
+  backup:
+    image: ${REGISTRY_URL}/${COMPOSE_PROJECT_NAME}-main:${VERSION}
+    container_name: ${COMPOSE_PROJECT_NAME}-backup
+    command: ["backup_daemon"]
+    depends_on: ["postgres"]
+    volumes:
+      - "data:/data"
+      - "./.secret.env:/src/.secret.env"
+      - "./backup:/src/backup"
+    env_file: .env
+    logging:
+      driver: syslog
+      options:
+        tag: "docker/${COMPOSE_PROJECT_NAME}-backup"
+
   # tasks:
   #   image: ${REGISTRY_URL}/${COMPOSE_PROJECT_NAME}-main:${VERSION}
   #   container_name: ${COMPOSE_PROJECT_NAME}-tasks
