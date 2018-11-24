@@ -44,7 +44,7 @@ ENV DJANGO_SETTINGS_MODULE core.settings
 
 # pip packages
 RUN pip install --no-cache-dir \
-  django==2.1.2 \
+  django==2.1.3 \
   psycopg2-binary==2.7.5 \
   uwsgi==2.0.17.1 \
   django-debug-toolbar==1.10.1 \

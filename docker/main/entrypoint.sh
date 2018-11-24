@@ -28,9 +28,12 @@ if [ "$1" = 'nginx' ]; then
 fi
 
 ################################################################################
-# Utilities (should be started in dev or deployment)
+# Utilities (will run as the dir owner in DEV)
 ################################################################################
-usergroup="$(stat -c '%u:%g' .)"
+usergroup=django
+if [ "$ENV" = 'DEV' ]; then
+  usergroup="$(stat -c '%u:%g' .)"
+fi
 
 # ################################################################################
 # if [ "$1" = 'test' ]; then
@@ -52,8 +55,6 @@ usergroup="$(stat -c '%u:%g' .)"
 ################################################################################
 if [ "$1" = 'collectstatic' ]; then
   prepare -w -u "$usergroup" django
-  # mkdir -p static
-  # chown -R django:django /src/static
   gprun -u "$usergroup" django-admin collectstatic -c --noinput
   # Django uses FILE_UPLOAD_DIRECTORY_PERMISSIONS and FILE_UPLOAD_PERMISSIONS
   # to create these files, but it is not good for us here.
@@ -62,34 +63,10 @@ if [ "$1" = 'collectstatic' ]; then
   exit 0
 fi
 
-# ################################################################################
-# if [ "$1" = 'makemigrations' ]; then
-#   prepare -w django
-#   chown -R django:django /src/djangoproject/*/migrations
-#   gprun -u django:django django-admin makemigrations
-#   find /src/static -type d -exec chmod 755 {} +
-#   find /src/static -type f -exec chmod 644 {} +
-#   u="$(stat -c '%u' .git)"
-#   chown -R "$u:$u" /src/djangoproject/*/migrations
-#   exit 0
-# fi
-
-# ################################################################################
-# if [ "$1" = 'docs' ]; then
-#   u="$(stat -c '%u' .git)"
-#   prepare -w -u "$u" django
-#   cd /src/docs
-#   gprun -u "$u:$u" make html
-#   # gprun -u "$u:$u" make latexpdf
-#   # What are these lines for?
-#   # cd /src/docs/build/latex
-#   # gprun -u "$u:$u" make all
-#   exit 0
-# fi
-
 ################################################################################
 if [ "$1" = 'with_django' ]; then
   shift
+  echo "starting with uid:gid $usergroup"
   prepare -w -u "$usergroup" django
   exec gprun -u "$usergroup" "$@"
 fi

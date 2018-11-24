@@ -15,11 +15,23 @@ readsecret:
 collectstatic:
 	$(devcompose) docker-compose run --rm django collectstatic
 
+.PHONY: docs
+docs:
+	$(devcompose) docker-compose run --rm -e 'VERSION=$(timestamp)' django \
+	  with_django bash -c "cd docs; make html"
+
+.PHONY: test
+test:
+	$(devcompose) docker-compose run --rm django with_django bash -c \
+	"coverage run django_project/manage.py test django_project && \
+	 coverage report && coverage html"
+
 build:
 	$(devcompose) docker-compose down
 	$(devcompose) docker-compose build
-	$(devcompose) docker-compose run --rm django collectstatic
-	# $(devcompose) docker-compose run --rm -e 'VERSION=$(timestamp)' django docs
+	make collectstatic
+	make test
+	make docs &&	rm -rf static/docs && cp -r docs/build/html static/docs
 	$(devcompose) docker-compose build
 	$(devcompose) docker-compose down
 
@@ -38,15 +50,12 @@ bash:
 # coverage:
 # 	docker-compose run --rm django coverage
 #
-# .PHONY: docs
-# docs:
-# 	docker-compose run --rm django docs
-#
-# migrate:
-# 	docker-compose run --rm django with_django django-admin migrate
-#
-# makemigrations:
-# 	docker-compose run --rm django with_django django-admin makemigrations
+
+migrate:
+	docker-compose run --rm django with_django django-admin migrate
+
+makemigrations:
+	docker-compose run --rm django with_django django-admin makemigrations
 
 .PHONY: backup
 backup:

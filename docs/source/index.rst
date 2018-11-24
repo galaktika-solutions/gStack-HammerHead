@@ -1,8 +1,8 @@
-Welcome to the documentation!
-===============================
+Welcome to the Docs!
+====================
 
 .. toctree::
    :maxdepth: 2
-   :caption: Django Apps:
+   :caption: Contents:
 
-   Core <core>
+   Demo <demo>
