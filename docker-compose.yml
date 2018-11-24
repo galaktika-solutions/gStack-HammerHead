@@ -56,7 +56,7 @@ services:
   backup:
     image: ${REGISTRY_URL}/${IMAGE_BASENAME}-main:${VERSION}
     container_name: ${COMPOSE_PROJECT_NAME}-backup
-    command: ["backup_daemon"]
+    command: ["true"]
     depends_on: ["postgres"]
     volumes:
       - "data:/data"

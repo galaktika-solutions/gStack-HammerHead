@@ -12,16 +12,16 @@ createsecret:
 readsecret:
 	docker-compose run --rm postgres readsecret_ui
 
-# collectstatic:
-# 	$(devcompose) docker-compose run --rm django collectstatic
+collectstatic:
+	$(devcompose) docker-compose run --rm django collectstatic
 
 build:
 	$(devcompose) docker-compose down
 	$(devcompose) docker-compose build
-	# $(devcompose) docker-compose run --rm django collectstatic
+	$(devcompose) docker-compose run --rm django collectstatic
 	# $(devcompose) docker-compose run --rm -e 'VERSION=$(timestamp)' django docs
-	# $(devcompose) docker-compose build
-	# $(devcompose) docker-compose down
+	$(devcompose) docker-compose build
+	$(devcompose) docker-compose down
 
 # shell_plus:
 # 	docker-compose run --rm django with_django django-admin shell_plus
