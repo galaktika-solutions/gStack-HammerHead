@@ -6,10 +6,6 @@
 /backup
 /.files
 /.coverage
-/django_project/*/static
-/js_client
-/docs/source
-/docs/Makefile
 /docs/build/doctrees
 
 **/__pycache__

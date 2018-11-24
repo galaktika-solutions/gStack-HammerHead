@@ -124,7 +124,7 @@ theme_logo_only = True
 
 # -- Options for HTMLHelp output ------------------------------------------
 # Output file base name for HTML help builder.
-htmlhelp_basename = str(os.environ.get('COMPOSE_PROJECT_NAME') + 'doc')
+htmlhelp_basename = project + 'doc'
 
 
 # -- Options for LaTeX output ---------------------------------------------
@@ -151,8 +151,8 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [(
     master_doc,
-    str(os.environ.get('COMPOSE_PROJECT_NAME') + '.tex'),
-    str(os.environ.get('COMPOSE_PROJECT_NAME') + 'Documentation'),
+    project + '.tex',
+    project + 'Documentation',
     'Galaktika Solutions',
     'manual'),
 ]
@@ -163,8 +163,8 @@ latex_documents = [(
 # (source start file, name, description, authors, manual section).
 man_pages = [(
     master_doc,
-    str(os.environ.get('COMPOSE_PROJECT_NAME') + '.tex'),
-    str(os.environ.get('COMPOSE_PROJECT_NAME') + 'Documentation'),
+    project + '.tex',
+    project + 'Documentation',
     [author],
     1)
 ]
@@ -176,10 +176,10 @@ man_pages = [(
 #  dir menu entry, description, category)
 texinfo_documents = [(
     master_doc,
-    str(os.environ.get('COMPOSE_PROJECT_NAME') + '.tex'),
-    str(os.environ.get('COMPOSE_PROJECT_NAME') + 'Documentation'),
+    project + '.tex',
+    project + 'Documentation',
     author,
-    os.environ.get('COMPOSE_PROJECT_NAME'),
+    project,
     'One line description of project.',
     'Miscellaneous'),
 ]

@@ -6,6 +6,3 @@ omit = */migrations/*
        */tests/*
        */wsgi.py
        */manage.py
-
-[html]
-directory = /src/static/coverage_report/

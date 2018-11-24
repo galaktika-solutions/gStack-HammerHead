@@ -3,57 +3,19 @@ version: "3.7"
 services:
   postgres:
     build:
-        context: .
-        dockerfile: docker/main/Dockerfile
+      context: .
+      dockerfile: docker/main/Dockerfile
     volumes:
       - ".:/src"
-    logging:
-      driver: json-file
 
   django:
     volumes:
       - ".:/src"
-    logging:
-      driver: json-file
-    ports:
-      - "127.0.0.1:8000:8000"
 
   nginx:
     volumes:
       - ".:/src"
-    logging:
-      driver: json-file
-
-  redis:
-    volumes:
-      - ".:/src"
-    logging:
-      driver: json-file
-
-  daphne:
-    volumes:
-      - ".:/src"
-    logging:
-      driver: json-file
-
-  build_js:
-    build:
-        context: .
-        dockerfile: docker/node/Dockerfile
-    image: ${COMPOSE_PROJECT_NAME}-node
-    volumes:
-      - ".:/src"
-    env_file: .env
-    command: ["npm", "start"]
 
   backup:
     volumes:
       - ".:/src"
-    logging:
-      driver: json-file
-
-  # tasks:
-  #   volumes:
-  #     - ".:/src"
-  #   logging:
-  #     driver: json-file
