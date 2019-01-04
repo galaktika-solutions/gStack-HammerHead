@@ -35,23 +35,6 @@ if [ "$ENV" = 'DEV' ]; then
   usergroup="$(stat -c '%u:%g' .)"
 fi
 
-# ################################################################################
-# if [ "$1" = 'test' ]; then
-#   prepare -w django
-#
-#   keepdb=''
-#   if [ "$2" = 'keepdb' ]; then
-#     keepdb='--keepdb'
-#   fi
-#
-#   gprun -u django:django -s SIGINT coverage run django-admin test \
-#     $keepdb -v 2 --noinput
-#   coverage report
-#   u="$(stat -c '%u' .git)"
-#   gprun -u "$u:$u" coverage html
-#   exit 0
-# fi
-
 ################################################################################
 if [ "$1" = 'collectstatic' ]; then
   prepare -w -u "$usergroup" django
@@ -68,7 +51,7 @@ if [ "$1" = 'with_django' ]; then
   shift
   echo "starting with uid:gid $usergroup"
   prepare -w -u "$usergroup" django
-  exec gprun -u "$usergroup" "$@"
+  exec gprun -u "$usergroup" -s SIGINT "$@"
 fi
 
 ################################################################################

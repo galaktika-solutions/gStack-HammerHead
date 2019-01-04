@@ -5,6 +5,9 @@ volumes:
 
 networks:
   default:
+    ipam:
+      config:
+        - subnet: 10.71.55.0/24
 
 services:
   postgres:

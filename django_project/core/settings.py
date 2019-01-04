@@ -1,4 +1,5 @@
 import os
+import logging.config
 
 from gdockutils import read_secret_from_file
 
@@ -101,6 +102,9 @@ USE_TZ = True
 
 STATIC_URL = '/assets/'
 STATIC_ROOT = '/src/static/'
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+]
 
 # File Upload max 50MB
 DATA_UPLOAD_MAX_MEMORY_SIZE = 52428800
@@ -111,3 +115,40 @@ FILE_UPLOAD_PERMISSIONS = 0o640
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
+
+LOGGING_CONFIG = None
+logging.config.dictConfig({
+    'version': 1,
+    'disable_existing_loggers': False,
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse',
+        },
+    },
+    'formatters': {
+        'django': {
+            'class': 'core.logging.GStackFormatter',
+            'format': '|{asctime}|{name}|{levelname}|{message}',
+            'datefmt': '%Y-%m-%d %H:%M:%S%z',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'INFO',
+            'formatter': 'django',
+            'class': 'logging.StreamHandler',
+        },
+        'mail_admins': {
+            'level': 'ERROR',
+            'filters': ['require_debug_false'],
+            'class': 'django.utils.log.AdminEmailHandler'
+        }
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console', 'mail_admins'],
+            'level': 'INFO',
+        },
+    }
+})
